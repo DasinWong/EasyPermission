@@ -58,5 +58,6 @@ EasyPermission.with(this)
 ```
 #### 3.2 自动化申请
 ```
+//同样可以调用listen方法添加监听
 EasyPermission.with(this).autoRequest();
 ```
