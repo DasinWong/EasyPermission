@@ -10,15 +10,17 @@ Project层级下的build.gradle文件
 ```
 allprojects {
     repositories {
-    ...
-    maven { url 'https://jitpack.io' }
+        ...
+        maven { url 'https://jitpack.io' }
     }
 }
 ```
 Module层级下的build.gradle文件
 ```
-implementation 'com.github.dasinwong:permissionhelper:2.0'
-```
+dependencies {
+    ...
+    implementation 'com.github.dasinwong:EasyPermission:1.0'
+}
 ## 2.类及其方法介绍
 ### EasyPermission
 权限申请核心类
@@ -53,8 +55,7 @@ EasyPermission.with(this)
             }
         }).request();
 ```
-#### 3.2
-#### 自动化申请
+#### 3.2 自动化申请
 ```
 EasyPermission.with(this).autoRequest();
 ```
