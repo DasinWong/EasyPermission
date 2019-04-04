@@ -21,6 +21,7 @@ dependencies {
     ...
     implementation 'com.github.dasinwong:EasyPermission:1.0'
 }
+```
 ## 2.类及其方法介绍
 ### EasyPermission
 权限申请核心类
