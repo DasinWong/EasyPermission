@@ -17,19 +17,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        EasyPermission.with(this)
-//                .add(Manifest.permission.CAMERA)
-//                .add(Manifest.permission.READ_EXTERNAL_STORAGE)
-//                .add(Manifest.permission.ACCESS_COARSE_LOCATION)
-//                .listen(new PermissionListener() {
-//                    @Override
-//                    public void onComplete(Map<String, PermissionResult> resultMap) {
-//                        for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
-//                            Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
-//                        }
-//                    }
-//                }).request();
-
         EasyPermission.with(this).listen(new PermissionListener() {
             @Override
             public void onComplete(Map<String, PermissionResult> resultMap) {
@@ -38,5 +25,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).autoRequest();
+
     }
 }
