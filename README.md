@@ -4,7 +4,7 @@ Android 运行时权限申请框架（自动化检测申请）
 - 添加异常判断，便于调试
 - 可按需添加权限检测申请
 - 可自动化检测权限并申请（之前一直在想的懒人模式）
-- 6.0以上悬浮窗与8.0以上安装应用权限默认返回失败（待更新）
+- 6.0悬浮窗与8.0安装应用权限只能分别单独申请
 ## 1.如何接入
 Project层级下的build.gradle文件
 ```
@@ -19,7 +19,7 @@ Module层级下的build.gradle文件
 ```
 dependencies {
     ...
-    implementation 'com.github.dasinwong:EasyPermission:1.0'
+    implementation 'com.github.dasinwong:EasyPermission:1.1'
 }
 ```
 ## 2.类及其方法介绍
@@ -60,4 +60,30 @@ EasyPermission.with(this)
 ```
 //同样可以调用listen方法添加监听
 EasyPermission.with(this).autoRequest();
+```
+#### 3.3 申请悬浮窗权限
+```
+EasyPermission.with(this)
+        .add(Manifest.permission.SYSTEM_ALERT_WINDOW)
+        .listen(new PermissionListener() {
+            @Override
+            public void onComplete(Map<String, PermissionResult> resultMap) {
+                for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
+                    Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
+                }
+            }
+        }).request();
+```
+#### 3.4 申请应用安装权限
+```
+EasyPermission.with(this)
+        .add(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+        .listen(new PermissionListener() {
+            @Override
+            public void onComplete(Map<String, PermissionResult> resultMap) {
+                for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
+                    Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
+                }
+            }
+        }).request();
 ```
