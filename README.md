@@ -58,8 +58,14 @@ EasyPermission.with(this)
 ```
 #### 3.2 自动化申请
 ```
-//同样可以调用listen方法添加监听
-EasyPermission.with(this).autoRequest();
+EasyPermission.with(this).listen(new PermissionListener() {
+    @Override
+    public void onComplete(Map<String, PermissionResult> resultMap) {
+        for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
+            Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
+        }
+    }
+}).autoRequest();
 ```
 #### 3.3 申请悬浮窗权限
 部分手机重启后生效
