@@ -42,6 +42,7 @@ dependencies {
 | DENIED | 拒绝申请 |
 ## 3.使用方法
 #### 3.1 添加权限并申请
+添加的权限未在AndroidManifest中配置会抛出运行时异常，有利于开发调试
 ```
 EasyPermission.with(this)
         .add(Manifest.permission.CAMERA)
@@ -57,6 +58,7 @@ EasyPermission.with(this)
         }).request();
 ```
 #### 3.2 自动化申请
+自动获取AndroidManifest文件中的运行时权限并申请
 ```
 EasyPermission.with(this).listen(new PermissionListener() {
     @Override
@@ -68,29 +70,16 @@ EasyPermission.with(this).listen(new PermissionListener() {
 }).autoRequest();
 ```
 #### 3.3 申请悬浮窗权限
-部分手机重启后生效
+部分手机重启后生效（不建议添加监听）
 ```
 EasyPermission.with(this)
         .add(Manifest.permission.SYSTEM_ALERT_WINDOW)
-        .listen(new PermissionListener() {
-            @Override
-            public void onComplete(Map<String, PermissionResult> resultMap) {
-                for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
-                    Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
-                }
-            }
-        }).request();
+        .request();
 ```
 #### 3.4 申请应用安装权限
+不建议添加监听
 ```
 EasyPermission.with(this)
         .add(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-        .listen(new PermissionListener() {
-            @Override
-            public void onComplete(Map<String, PermissionResult> resultMap) {
-                for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
-                    Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
-                }
-            }
-        }).request();
+        .request();
 ```
