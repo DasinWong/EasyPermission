@@ -62,6 +62,7 @@ EasyPermission.with(this)
 EasyPermission.with(this).autoRequest();
 ```
 #### 3.3 申请悬浮窗权限
+部分手机重启后生效
 ```
 EasyPermission.with(this)
         .add(Manifest.permission.SYSTEM_ALERT_WINDOW)
