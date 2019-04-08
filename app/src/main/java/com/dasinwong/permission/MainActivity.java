@@ -1,6 +1,5 @@
 package com.dasinwong.permission;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,19 +17,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EasyPermission.with(this)
-                .add(Manifest.permission.CAMERA)
-                .add(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .add(Manifest.permission.ACCESS_COARSE_LOCATION)
-                .listen(new PermissionListener() {
-                    @Override
-                    public void onComplete(Map<String, PermissionResult> resultMap) {
-                        for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
-                            Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
-                        }
-                    }
-                }).request();
+//        EasyPermission.with(this)
+//                .add(Manifest.permission.CAMERA)
+//                .add(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                .add(Manifest.permission.ACCESS_COARSE_LOCATION)
+//                .listen(new PermissionListener() {
+//                    @Override
+//                    public void onComplete(Map<String, PermissionResult> resultMap) {
+//                        for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
+//                            Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
+//                        }
+//                    }
+//                }).request();
 
-        EasyPermission.with(this).autoRequest();
+        EasyPermission.with(this).listen(new PermissionListener() {
+            @Override
+            public void onComplete(Map<String, PermissionResult> resultMap) {
+                for (Map.Entry<String, PermissionResult> entry : resultMap.entrySet()) {
+                    Log.e("EasyPermission", entry.getKey() + " " + entry.getValue());
+                }
+            }
+        }).autoRequest();
     }
 }

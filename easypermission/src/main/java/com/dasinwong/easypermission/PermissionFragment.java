@@ -1,11 +1,16 @@
 package com.dasinwong.easypermission;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -16,9 +21,12 @@ public class PermissionFragment extends Fragment {
 
     private static final String TAG = "EasyPermission";
     private static final int REQUEST_CODE = 1;
+    private static final int OVERLAYS_REQUEST_CODE = 2;
+    private static final int INSTALLS_REQUEST_CODE = 3;
 
     private PermissionListener listener;
     private Map<String, PermissionResult> permissions;
+    private Activity activity;
 
     /**
      * 构造权限请求fragment
@@ -52,6 +60,7 @@ public class PermissionFragment extends Fragment {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             throw new RuntimeException("请在主线程申请权限");
         }
+        this.activity = activity;
         activity.getFragmentManager()
                 .beginTransaction()
                 .add(this, activity.getClass().getName())
@@ -88,6 +97,17 @@ public class PermissionFragment extends Fragment {
         for (String permission : deniedPermissions) {
             Log.i(TAG, permission + " 权限未允许");
         }
+        //判断申请的权限是否仅为悬浮窗
+        if (deniedPermissions.size() == 1 && deniedPermissions.contains(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
+            requestOverlaysPermission();
+            return;
+        }
+        //判断申请的权限是否仅为应用安装
+        if (deniedPermissions.size() == 1 && deniedPermissions.contains(Manifest.permission.REQUEST_INSTALL_PACKAGES)) {
+            requestInstallPermission();
+            return;
+        }
+        //申请其他的运行时权限
         requestPermissions(deniedPermissions.toArray(new String[deniedPermissions.size()]), REQUEST_CODE);
     }
 
@@ -105,6 +125,42 @@ public class PermissionFragment extends Fragment {
             }
             getFragmentManager().beginTransaction().remove(this).commit();
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 6.0 以上系统悬浮窗权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && requestCode == OVERLAYS_REQUEST_CODE) {
+            PermissionResult result = (PermissionUtils.checkOverlaysPermission(activity) ? PermissionResult.GRANTED : PermissionResult.DENIED);
+            permissions.put(Manifest.permission.SYSTEM_ALERT_WINDOW, result);
+        }
+        // 8.0 以上应用安装权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && requestCode == INSTALLS_REQUEST_CODE) {
+            PermissionResult result = (PermissionUtils.checkInstallPermission(activity) ? PermissionResult.GRANTED : PermissionResult.DENIED);
+            permissions.put(Manifest.permission.REQUEST_INSTALL_PACKAGES, result);
+        }
+        if (listener != null) {
+            listener.onComplete(permissions);
+        }
+        getFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    /**
+     * 申请悬浮窗权限
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestOverlaysPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + activity.getPackageName()));
+        startActivityForResult(intent, OVERLAYS_REQUEST_CODE);
+    }
+
+    /**
+     * 申请应用安装权限
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    public void requestInstallPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + activity.getPackageName()));
+        startActivityForResult(intent, INSTALLS_REQUEST_CODE);
     }
 }
 

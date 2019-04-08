@@ -1,7 +1,11 @@
 package com.dasinwong.easypermission;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Process;
 import android.provider.Settings;
@@ -37,6 +41,15 @@ public class PermissionUtils {
     }
 
     /**
+     * 申请应用安装权限
+     */
+    @TargetApi(Build.VERSION_CODES.O)
+    public static void requestInstallPermission(Activity activity, int requestCode) {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    /**
      * 是否具有悬浮窗权限
      */
     public static boolean checkOverlaysPermission(Context context) {
@@ -44,6 +57,15 @@ public class PermissionUtils {
             return Settings.canDrawOverlays(context);
         }
         return true;
+    }
+
+    /**
+     * 申请悬浮窗权限
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    public static void requestOverlaysPermission(Activity activity, int requestCode) {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + activity.getPackageName()));
+        activity.startActivityForResult(intent, requestCode);
     }
 
     /**
